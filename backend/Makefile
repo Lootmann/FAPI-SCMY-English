@@ -22,7 +22,7 @@ cov:
 	$(OPTION) python3 -m pytest --cov --cov-report=html
 
 report:
-	google-chrome ./backend/htmlcov/index.html
+	google-chrome ./htmlcov/index.html
 
 profile:
 	$(OPTION) python3 -m pytest --profile-svg
