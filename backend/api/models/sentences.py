@@ -13,4 +13,4 @@ class Sentence(Base):
     counter: Mapped[int]
 
     def __repr__(self) -> str:
-        return f"<Sentence (id, sent, trans, conter) = ({self.id}, {self.sentence}, {self.translation}, {self.counter})>"
+        return f"<Sentence (id, sent, trans, counter) = ({self.id}, {self.sentence}, {self.translation}, {self.counter})>"
