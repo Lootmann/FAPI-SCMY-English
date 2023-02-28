@@ -1,10 +1,6 @@
 from random import randint, sample
 from string import ascii_letters
 
-import pytest
-from fastapi import status
-
-from api.models.words import Word as WordModel
 from api.schemas import sentences as sentence_schema
 from api.schemas import words as word_schema
 from tests.init_async_client import async_client as client
@@ -25,3 +21,16 @@ class WordFactory:
             "/words", json={"spell": fixed_string(), "meaning": fixed_string()}
         )
         return word_schema.WordCreateResponse(**resp.json())
+
+
+class SentenceFactory:
+    @staticmethod
+    async def create_sentence(client):
+        resp = await client.post(
+            "/sentences",
+            json={
+                "sentence": fixed_string(size=10),
+                "translation": fixed_string(size=10),
+            },
+        )
+        return sentence_schema.SentenceCreateResponse(**resp.json())
