@@ -48,4 +48,5 @@ async def create_word(
     word_body: word_schema.WordCreate,
     db: AsyncSession = Depends(get_db),
 ):
+    # TODO: validation - dup word is not allowed.
     return await word_api.create_word(db, word_body)
