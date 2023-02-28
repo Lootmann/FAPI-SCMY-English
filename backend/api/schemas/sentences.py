@@ -17,11 +17,12 @@ class SentenceBase(BaseModel):
 
 
 class SentenceCreate(SentenceBase):
-    pass
+    counter: int = 0
 
 
 class SentenceCreateResponse(SentenceCreate):
     id: int
+    counter: int
 
 
 class Sentence(SentenceBase):
