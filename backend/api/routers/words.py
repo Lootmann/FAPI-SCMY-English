@@ -22,6 +22,23 @@ async def get_all_words(
     return await word_api.get_all_words(db)
 
 
+@router.get(
+    "/words/{word_id}",
+    response_model=word_schema.Word,
+    status_code=status.HTTP_200_OK,
+)
+async def get_word(
+    word_id: int,
+    db: AsyncSession = Depends(get_db),
+):
+    word = await word_api.find_by_id(db, word_id)
+    if not word:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail=f"Word: {word_id} Not Found"
+        )
+    return word
+
+
 @router.post(
     "/words",
     response_model=word_schema.WordCreateResponse,
