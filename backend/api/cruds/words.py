@@ -14,6 +14,11 @@ async def get_all_words(db: AsyncSession) -> List[WordModel]:
     return results.scalars().all()
 
 
+async def find_by_id(db: AsyncSession, word_id: int) -> WordModel | None:
+    result = await db.execute(select(WordModel).where(WordModel.id == word_id))
+    return result.scalar()
+
+
 async def create_word(db: AsyncSession, word_body: word_schema.WordCreate) -> WordModel:
     word = WordModel(**word_body.dict())
 
