@@ -11,13 +11,11 @@ repos:
     hooks:
       - id: black
         name: black (python)
-        files: ./
-        args: [--config, pyproject.toml]
+        args: [--config, ./backend/pyproject.toml]
 
   - repo: https://github.com/pycqa/isort
     rev: 5.12.0
     hooks:
       - id: isort
         name: isort (python)
-        files: ./
-        args: [--settings-path, pyproject.toml]
+        args: [--settings-path, ./backend/pyproject.toml]
