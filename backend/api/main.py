@@ -1,8 +1,9 @@
 from fastapi import FastAPI
 
+from api.routers.sentences import router as sentence_router
+from api.routers.words import router as word_router
+
 app = FastAPI()
 
-
-@app.get("/")
-def root():
-    return {"hello": "world :^)"}
+app.include_router(sentence_router)
+app.include_router(word_router)
