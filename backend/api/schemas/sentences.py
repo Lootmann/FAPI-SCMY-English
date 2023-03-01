@@ -8,16 +8,17 @@ class SentenceBase(BaseModel):
     class Config:
         orm_mode = True
 
-        extra_schema = {
+
+class SentenceCreate(SentenceBase):
+    class Config:
+        orm_mode = True
+
+        schema_extra = {
             "example": {
                 "sentence": "Example",
                 "translation": "さんぷる",
             }
         }
-
-
-class SentenceCreate(SentenceBase):
-    counter: int = 0
 
 
 class SentenceCreateResponse(SentenceCreate):

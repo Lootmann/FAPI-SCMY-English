@@ -8,16 +8,15 @@ class WordBase(BaseModel):
     class Config:
         orm_mode = True
 
-        extra_schema = {
+
+class WordCreate(WordBase):
+    class Config:
+        schema_extra = {
             "example": {
                 "spell": "hello",
                 "meaning": "こんにちは",
             }
         }
-
-
-class WordCreate(WordBase):
-    pass
 
 
 class WordCreateResponse(WordCreate):
