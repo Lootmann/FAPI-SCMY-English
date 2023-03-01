@@ -51,3 +51,8 @@ class TestPOSTSentence:
         sentence_data = {"sentence": "hello, world", "translation": "こんにちは、せかい"}
         resp = await client.post("/sentences", json=sentence_data)
         assert resp.status_code == status.HTTP_201_CREATED
+
+        resp_obj = sencente_schema.SentenceCreateResponse(**resp.json())
+        assert resp_obj.sentence == "hello, world"
+        assert resp_obj.translation == "こんにちは、せかい"
+        assert resp_obj.counter == 0
