@@ -1,3 +1,5 @@
+from typing import Optional
+
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -12,5 +14,11 @@ class Sentence(Base):
     translation: Mapped[str]
     counter: Mapped[int] = mapped_column(default=0)
 
+    # Talk - some sentences has no relation to talk
+    talk_id: Mapped[int] = ForeignKey("talks.id")
+
     def __repr__(self) -> str:
-        return f"<Sentence (id, sent, trans, counter) = ({self.id}, {self.sentence}, {self.translation}, {self.counter})>"
+        return (
+            "<Sentence (id, sent, trans, counter, talk_id)"
+            + f" = ({self.id}, {self.sentence}, {self.translation}, {self.counter}, {self.talk_id})>"
+        )
