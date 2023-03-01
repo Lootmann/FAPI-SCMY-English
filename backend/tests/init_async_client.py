@@ -9,13 +9,10 @@ from api.settings import Settings
 
 setting = Settings()
 
-ASYNC_DB_URL = setting.test_db_url
-async_engine = create_async_engine(ASYNC_DB_URL, echo=True)
-
 
 @pytest_asyncio.fixture
 async def async_client() -> AsyncClient:
-    async_engine = create_async_engine(ASYNC_DB_URL, echo=False)
+    async_engine = create_async_engine(setting.test_db_url, echo=False)
     async_session = sessionmaker(
         bind=async_engine,
         class_=AsyncSession,
