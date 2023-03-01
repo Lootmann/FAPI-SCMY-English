@@ -16,10 +16,12 @@ def fixed_string(size=5) -> str:
 
 class WordFactory:
     @staticmethod
-    async def create_word(client):
-        resp = await client.post(
-            "/words", json={"spell": fixed_string(), "meaning": fixed_string()}
-        )
+    async def create_word(
+        client,
+        spell: str = fixed_string(),
+        meaning: str = fixed_string(),
+    ):
+        resp = await client.post("/words", json={"spell": spell, "meaning": meaning})
         return word_schema.WordCreateResponse(**resp.json())
 
 

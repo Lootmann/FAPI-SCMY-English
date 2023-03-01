@@ -1,5 +1,6 @@
 from typing import List
 
+from sqlalchemy import or_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
@@ -17,6 +18,31 @@ async def get_all_words(db: AsyncSession) -> List[WordModel]:
 async def find_by_id(db: AsyncSession, word_id: int) -> WordModel | None:
     result = await db.execute(select(WordModel).where(WordModel.id == word_id))
     return result.scalar()
+
+
+async def find_by_meaning(db: AsyncSession, meaning: str) -> List[WordModel]:
+    results = await db.execute(
+        select(WordModel).where(WordModel.meaning.icontains(meaning))
+    )
+    return results.scalars().all()
+
+
+async def find_by_spell(db: AsyncSession, spell: str) -> List[WordModel]:
+    results = await db.execute(
+        select(WordModel).where(WordModel.spell.icontains(spell))
+    )
+    return results.scalars().all()
+
+
+async def find_by_meaning_and_spell(
+    db: AsyncSession, spell: str, meaning: str
+) -> List[WordModel]:
+    results = await db.execute(
+        select(WordModel).where(
+            WordModel.spell.icontains(spell) | WordModel.meaning.icontains(meaning)
+        )
+    )
+    return results.scalars().all()
 
 
 async def create_word(db: AsyncSession, word_body: word_schema.WordCreate) -> WordModel:

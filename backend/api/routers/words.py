@@ -39,6 +39,27 @@ async def get_word(
     return word
 
 
+@router.get(
+    "/words/search/",
+    response_model=List[word_schema.Word],
+    status_code=status.HTTP_200_OK,
+)
+async def find_by_params(
+    spell: str = "", meaning: str = "", db: AsyncSession = Depends(get_db)
+):
+    if spell == "" and meaning == "":
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=f"No Params",
+        )
+
+    if spell == "":
+        return await word_api.find_by_meaning(db, meaning)
+    elif meaning == "":
+        return await word_api.find_by_spell(db, spell)
+    return await word_api.find_by_meaning_and_spell(db, spell, meaning)
+
+
 @router.post(
     "/words",
     response_model=word_schema.WordCreateResponse,
