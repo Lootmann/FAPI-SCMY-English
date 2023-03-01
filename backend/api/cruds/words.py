@@ -60,3 +60,19 @@ async def create_word(db: AsyncSession, word_body: word_schema.WordCreate) -> Wo
     await db.refresh(word)
 
     return word
+
+
+async def update_word(
+    db: AsyncSession, original: WordModel, word_update: word_schema.WordUpdate
+) -> WordModel:
+    if word_update.spell != "":
+        original.spell = word_update.spell
+
+    if word_update.meaning != "":
+        original.meaning = word_update.meaning
+
+    db.add(original)
+    await db.commit()
+    await db.refresh(original)
+
+    return original

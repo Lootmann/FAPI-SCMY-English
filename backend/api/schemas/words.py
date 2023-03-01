@@ -23,5 +23,13 @@ class WordCreateResponse(WordCreate):
     id: int
 
 
+class WordUpdate(BaseModel):
+    spell: str = Field("")
+    meaning: str = Field("")
+
+    class Config:
+        orm_mode = True
+
+
 class Word(WordBase):
     id: int

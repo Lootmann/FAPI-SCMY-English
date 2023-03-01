@@ -120,3 +120,54 @@ class TestPostWords:
 
         resp = await client.post("/words", json={"spell": "hoge", "meaning": "hage"})
         assert resp.status_code == status.HTTP_400_BAD_REQUEST
+
+
+@pytest.mark.asyncio
+class TestPatchWords:
+    async def test_patch_word(self, client):
+        word = await WordFactory.create_word(client, "spelling", "meaning")
+        word_id = word.id
+        word_data = {"spell": "updated", "meaning": "updated"}
+
+        resp = await client.patch(f"/words/{word_id}", json=word_data)
+        assert resp.status_code == status.HTTP_200_OK
+
+        resp_obj = resp.json()
+        assert resp_obj["spell"] == "updated"
+        assert resp_obj["meaning"] == "updated"
+
+    async def test_pathc_word_with_only_spell(self, client):
+        word = await WordFactory.create_word(client, "spelling", "meaning")
+        word_id = word.id
+        word_data = {"spell": "updated"}
+
+        resp = await client.patch(f"/words/{word_id}", json=word_data)
+        assert resp.status_code == status.HTTP_200_OK
+
+        resp_obj = resp.json()
+        assert resp_obj["spell"] != "spelling"
+        assert resp_obj["spell"] == "updated"
+        assert resp_obj["meaning"] != "updated"
+        assert resp_obj["meaning"] == "meaning"
+
+    async def test_pathc_word_with_only_meaning(self, client):
+        word = await WordFactory.create_word(client, "spelling", "meaning")
+        word_id = word.id
+        word_data = {"meaning": "updated"}
+
+        resp = await client.patch(f"/words/{word_id}", json=word_data)
+        assert resp.status_code == status.HTTP_200_OK
+
+        resp_obj = resp.json()
+        assert resp_obj["spell"] == "spelling"
+        assert resp_obj["spell"] != "updated"
+        assert resp_obj["meaning"] == "updated"
+        assert resp_obj["meaning"] != "meaning"
+
+    async def test_pathc_word_without_parameters(self, client):
+        word = await WordFactory.create_word(client, "spelling", "meaning")
+        word_id = word.id
+        word_data = {}
+
+        resp = await client.patch(f"/words/{word_id}", json=word_data)
+        assert resp.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY

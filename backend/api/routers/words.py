@@ -76,3 +76,29 @@ async def create_word(
             detail=f"Word: {word_body.spell} already exists",
         )
     return await word_api.create_word(db, word_body)
+
+
+@router.patch(
+    "/words/{word_id}",
+    response_model=word_schema.WordCreateResponse,
+    status_code=status.HTTP_200_OK,
+)
+async def update_word(
+    word_id: int,
+    word_body: word_schema.WordUpdate,
+    db: AsyncSession = Depends(get_db),
+):
+    original_word = await word_api.find_by_id(db, word_id)
+    if not original_word:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Word: {word_id} Not Found",
+        )
+
+    if word_body.spell == "" and word_body.meaning == "":
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=f"Word: POST BODY is invalid",
+        )
+
+    return await word_api.update_word(db, original_word, word_body)
