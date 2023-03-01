@@ -5,11 +5,10 @@ run:
 migrate:
 	$(OPTION) python3 -m api.migrate_db
 
-
-# tests
 test:
 	$(OPTION) python3 -m pytest -svv
 
+# re-test only failed tests
 re:
 	$(OPTION) python3 -m pytest -svv --lf
 
@@ -26,3 +25,8 @@ report:
 
 profile:
 	$(OPTION) python3 -m pytest --profile-svg
+
+
+.PHONY: dump
+dump:
+	sqlite3 dev.db .dump > ./dump/database.sql
