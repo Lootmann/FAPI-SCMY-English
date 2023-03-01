@@ -136,7 +136,7 @@ class TestPatchWords:
         assert resp_obj["spell"] == "updated"
         assert resp_obj["meaning"] == "updated"
 
-    async def test_pathc_word_with_only_spell(self, client):
+    async def test_patch_word_with_only_spell(self, client):
         word = await WordFactory.create_word(client, "spelling", "meaning")
         word_id = word.id
         word_data = {"spell": "updated"}
@@ -150,7 +150,7 @@ class TestPatchWords:
         assert resp_obj["meaning"] != "updated"
         assert resp_obj["meaning"] == "meaning"
 
-    async def test_pathc_word_with_only_meaning(self, client):
+    async def test_patch_word_with_only_meaning(self, client):
         word = await WordFactory.create_word(client, "spelling", "meaning")
         word_id = word.id
         word_data = {"meaning": "updated"}
@@ -164,7 +164,7 @@ class TestPatchWords:
         assert resp_obj["meaning"] == "updated"
         assert resp_obj["meaning"] != "meaning"
 
-    async def test_pathc_word_without_parameters(self, client):
+    async def test_patch_word_without_parameters(self, client):
         word = await WordFactory.create_word(client, "spelling", "meaning")
         word_id = word.id
         word_data = {}
