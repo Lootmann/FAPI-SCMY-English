@@ -14,5 +14,5 @@ def test_sentence_model_repr():
 
     assert (
         str(sentence)
-        == f"<Sentence (id, sent, trans, counter) = (1, Hello World, こんにちは、せかい, 0)>"
+        == f"<Sentence (id, sent, trans, counter, talk) = (1, Hello World, こんにちは、せかい, 0, None)>"
     )
