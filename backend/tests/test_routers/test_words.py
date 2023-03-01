@@ -171,3 +171,33 @@ class TestPatchWords:
 
         resp = await client.patch(f"/words/{word_id}", json=word_data)
         assert resp.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+
+
+@pytest.mark.asyncio
+class TestDeleteWord:
+    async def test_delete_word(self, client):
+        word = await WordFactory.create_word(client, "spelling", "meaning")
+
+        resp = await client.get("/words")
+        assert resp.status_code == status.HTTP_200_OK
+        assert len(resp.json()) == 1
+
+        word_id = word.id
+
+        resp = await client.delete(f"/words/{word_id}")
+        assert resp.status_code == status.HTTP_200_OK
+
+        resp_obj = resp.json()
+        assert resp_obj == None
+
+        resp = await client.get("/words")
+        assert resp.status_code == status.HTTP_200_OK
+        assert len(resp.json()) == 0
+
+    async def test_try_to_delete_word_with_wrong_id(self, client):
+        resp = await client.get("/words")
+        assert resp.status_code == status.HTTP_200_OK
+        assert len(resp.json()) == 0
+
+        resp = await client.delete(f"/words/123")
+        assert resp.status_code == status.HTTP_404_NOT_FOUND

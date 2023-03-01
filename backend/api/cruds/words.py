@@ -76,3 +76,9 @@ async def update_word(
     await db.refresh(original)
 
     return original
+
+
+async def delete_word(db: AsyncSession, original: WordModel) -> None:
+    await db.delete(original)
+    await db.commit()
+    return

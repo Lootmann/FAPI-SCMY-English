@@ -102,3 +102,14 @@ async def update_word(
         )
 
     return await word_api.update_word(db, original_word, word_body)
+
+
+@router.delete("/words/{word_id}", response_model=None, status_code=status.HTTP_200_OK)
+async def delete(word_id: int, db: AsyncSession = Depends(get_db)):
+    original = await word_api.find_by_id(db, word_id)
+    if not original:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Word: {word_id} Not Found",
+        )
+    return await word_api.delete_word(db, original)
