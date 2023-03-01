@@ -3,7 +3,7 @@ from fastapi import status
 
 from api.models.words import Word as WordModel
 from api.schemas import words as word_schema
-from tests.factory import WordFactory
+from tests.factory import WordFactory, random_string
 from tests.init_async_client import async_client as client
 
 
@@ -16,7 +16,7 @@ class TestGetAllWords:
 
     async def test_get_all_words(self, client):
         for _ in range(10):
-            await WordFactory.create_word(client)
+            await WordFactory.create_word(client, random_string(), random_string())
 
         resp = await client.get("/words")
         assert resp.status_code == status.HTTP_200_OK
@@ -52,8 +52,8 @@ class TestSearchWord:
 
         await WordFactory.create_word(client, spell="aZZ", meaning="ZZZ")
         await WordFactory.create_word(client, spell="ZZZ", meaning="bZZ")
-        await WordFactory.create_word(client, spell="AZZ", meaning="ZZZ")
-        await WordFactory.create_word(client, spell="ZZZ", meaning="BZZ")
+        await WordFactory.create_word(client, spell="AZX", meaning="ZZX")
+        await WordFactory.create_word(client, spell="ZZX", meaning="BZX")
 
         resp = await client.get("/words/search/?spell=a&meaning=b")
         assert resp.status_code == status.HTTP_200_OK
@@ -68,7 +68,7 @@ class TestSearchWord:
         assert resp.status_code == status.HTTP_200_OK
 
         await WordFactory.create_word(client, spell="aaa", meaning="bbb")
-        await WordFactory.create_word(client, spell="AAA", meaning="BBB")
+        await WordFactory.create_word(client, spell="AAZ", meaning="BBZ")
 
         resp = await client.get("/words/search/?spell=a")
         assert resp.status_code == status.HTTP_200_OK
@@ -83,7 +83,7 @@ class TestSearchWord:
         assert resp.status_code == status.HTTP_200_OK
 
         await WordFactory.create_word(client, spell="aaa", meaning="ccc")
-        await WordFactory.create_word(client, spell="AAA", meaning="CCC")
+        await WordFactory.create_word(client, spell="AAZ", meaning="CCZ")
 
         resp = await client.get("/words/search/?meaning=c")
         assert resp.status_code == status.HTTP_200_OK
@@ -113,3 +113,10 @@ class TestPostWords:
         word_data = {"spelling": "hello", "meaning": "こんにちは"}
         resp = await client.post("/words", json=word_data)
         assert resp.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+
+    async def test_try_to_create_duplicate_word(self, client):
+        resp = await client.post("/words", json={"spell": "hoge", "meaning": "hage"})
+        assert resp.status_code == status.HTTP_201_CREATED
+
+        resp = await client.post("/words", json={"spell": "hoge", "meaning": "hage"})
+        assert resp.status_code == status.HTTP_400_BAD_REQUEST

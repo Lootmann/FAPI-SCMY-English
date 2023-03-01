@@ -1,6 +1,6 @@
 from typing import List
 
-from sqlalchemy import or_
+from sqlalchemy import func
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
@@ -43,6 +43,13 @@ async def find_by_meaning_and_spell(
         )
     )
     return results.scalars().all()
+
+
+async def exists(db: AsyncSession, spell: str) -> bool:
+    result = await db.execute(
+        select(WordModel).where(func.lower(WordModel.spell) == func.lower(spell))
+    )
+    return result.scalar() is not None
 
 
 async def create_word(db: AsyncSession, word_body: word_schema.WordCreate) -> WordModel:
