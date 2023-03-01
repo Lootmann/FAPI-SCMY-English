@@ -108,6 +108,26 @@ class TestPatchSentence:
 
 
 @pytest.mark.asyncio
+class TestCountSentence:
+    async def test_count_sentence(self, client):
+        sentence = await SentenceFactory.create_sentence(client, "hoge", "hage")
+        assert sentence.counter == 0
+
+        resp = await client.patch(f"/sentences/{sentence.id}/count")
+        assert resp.status_code == status.HTTP_200_OK
+
+        resp_obj = resp.json()
+        assert resp_obj["counter"] == 1
+
+    async def test_count_sentence_with_wrong_id(self, client):
+        sentence = await SentenceFactory.create_sentence(client, "hoge", "hage")
+        assert sentence.counter == 0
+
+        resp = await client.patch(f"/sentences/123/count")
+        assert resp.status_code == status.HTTP_404_NOT_FOUND
+
+
+@pytest.mark.asyncio
 class TestDeleteSentence:
     async def test_delete_sentence(self, client):
         sentence = await SentenceFactory.create_sentence(client, "hoge", "hage")

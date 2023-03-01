@@ -35,6 +35,16 @@ async def create_sentence(
     return sentence
 
 
+async def count_sentence(db: AsyncSession, sentence: SentenceModel) -> SentenceModel:
+    sentence.counter += 1
+
+    db.add(sentence)
+    await db.commit()
+    await db.refresh(sentence)
+
+    return sentence
+
+
 async def update_sentence(
     db: AsyncSession,
     original: SentenceModel,

@@ -51,6 +51,21 @@ async def create_sentence(
 
 
 @router.patch(
+    "/sentences/{sentence_id}/count",
+    response_model=None,
+    status_code=status.HTTP_200_OK,
+)
+async def count_sentence(sentence_id: int, db: AsyncSession = Depends(get_db)):
+    sentence = await sentence_api.find_by_id(db, sentence_id)
+    if not sentence:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Sentence: {sentence_id} Not Found",
+        )
+    return await sentence_api.count_sentence(db, sentence)
+
+
+@router.patch(
     "/sentences/{sentence_id}",
     response_model=sentence_schema.Sentence,
     status_code=status.HTTP_200_OK,
