@@ -48,3 +48,47 @@ async def create_sentence(
 ):
     # TODO: validaiton - dup sentence isn't allowed
     return await sentence_api.create_sentence(db, sentence_body)
+
+
+@router.patch(
+    "/sentences/{sentence_id}",
+    response_model=sentence_schema.Sentence,
+    status_code=status.HTTP_200_OK,
+)
+async def update_sentence(
+    sentence_id: int,
+    sentence_body: sentence_schema.SentenceUpdate,
+    db: AsyncSession = Depends(get_db),
+):
+    original = await sentence_api.find_by_id(db, sentence_id)
+    if not original:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Sentence: {sentence_id} Not Found",
+        )
+
+    if sentence_body.sentence == "" and sentence_body.translation == "":
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=f"Sentence: POST BODY is invalid",
+        )
+
+    return await sentence_api.update_sentence(db, original, sentence_body)
+
+
+@router.delete(
+    "/sentences/{sentence_id}",
+    response_model=None,
+    status_code=status.HTTP_200_OK,
+)
+async def delete_sentence(
+    sentence_id: int,
+    db: AsyncSession = Depends(get_db),
+):
+    original = await sentence_api.find_by_id(db, sentence_id)
+    if not original:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Sentence: {sentence_id} Not Found",
+        )
+    return await sentence_api.delete_sentence(db, original)

@@ -26,5 +26,18 @@ class SentenceCreateResponse(SentenceCreate):
     counter: int
 
 
+class SentenceUpdate(BaseModel):
+    sentence: str = Field("")
+    translation: str = Field("")
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "sentence": "Example",
+                "translation": "さんぷる",
+            }
+        }
+
+
 class Sentence(SentenceBase):
     id: int

@@ -33,3 +33,27 @@ async def create_sentence(
     await db.refresh(sentence)
 
     return sentence
+
+
+async def update_sentence(
+    db: AsyncSession,
+    original: SentenceModel,
+    sentence_body: sentence_schema.SentenceUpdate,
+) -> SentenceModel:
+    if sentence_body.sentence != "":
+        original.sentence = sentence_body.sentence
+
+    if sentence_body.translation != "":
+        original.translation = sentence_body.translation
+
+    db.add(original)
+    await db.commit()
+    await db.refresh(original)
+
+    return original
+
+
+async def delete_sentence(db: AsyncSession, sentence: SentenceModel) -> None:
+    await db.delete(sentence)
+    await db.commit()
+    return
