@@ -1,3 +1,5 @@
 # English with ChatGPT
 
-GigaChad 🗿
+FastAPI + SQLAlchem + React + CHatGPT
+
+GigaChadGPT 🗿🗿🗿
