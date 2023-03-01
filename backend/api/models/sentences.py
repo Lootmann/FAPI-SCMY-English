@@ -15,10 +15,10 @@ class Sentence(Base):
     counter: Mapped[int] = mapped_column(default=0)
 
     # Talk - some sentences has no relation to talk
-    talk_id: Mapped[int] = ForeignKey("talks.id")
+    talk_id: Mapped[int] = mapped_column(ForeignKey("talks.id"), nullable=True)
 
     def __repr__(self) -> str:
         return (
-            "<Sentence (id, sent, trans, counter, talk_id)"
+            "<Sentence (id, sent, trans, counter, talk)"
             + f" = ({self.id}, {self.sentence}, {self.translation}, {self.counter}, {self.talk_id})>"
         )
