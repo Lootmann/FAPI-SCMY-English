@@ -19,9 +19,10 @@ def test_sentence_model_repr():
 def test_sentence_model_repr_with_talk():
     sentence = SentenceModel(id=1, sentence="hello", translation="Bonjour", counter=0)
     talk = TalkModel(id=1, order_id=1, sentence=sentence)
-    sentence.talk_id = talk.id
+    sentence.talk = talk
 
+    talk = "<Talk (id, order, sentence) = (1, 1, hello)>"
     assert (
         str(sentence)
-        == "<Sentence (id, sent, trans, counter, talk) = (1, hello, Bonjour, 0, 1)>"
+        == f"<Sentence (id, sent, trans, counter, talk) = (1, hello, Bonjour, 0, {talk})>"
     )
