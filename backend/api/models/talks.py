@@ -11,11 +11,11 @@ class Talk(Base):
     order_id: Mapped[int]
 
     # Sentence : Talk = 1 : 1
-    sentence_id: Mapped[int] = ForeignKey("sentences.id")
-    sentence: Mapped["Sentence"] = relationship("Sentence", uselist=False)
+    sentence_id: Mapped[int] = mapped_column(ForeignKey("sentences.id"))
+    sentence: Mapped["Sentence"] = relationship(back_populates="talk")
 
     # History : Talk = 1 : n
-    history_id: Mapped[int] = mapped_column(ForeignKey("histories.id"))
+    history_id = mapped_column(ForeignKey("histories.id"))
 
     def __repr__(self) -> str:
         return (

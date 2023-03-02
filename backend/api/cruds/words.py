@@ -1,8 +1,8 @@
 from typing import List
 
 from sqlalchemy import func
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from sqlalchemy.orm import Session
 
 from api.models.sentences import Sentence as SentenceModel
 from api.models.words import Word as WordModel
@@ -10,34 +10,27 @@ from api.schemas import sentences as sentence_schema
 from api.schemas import words as word_schema
 
 
-async def get_all_words(db: AsyncSession) -> List[WordModel]:
-    results = await db.execute(select(WordModel))
-    return results.scalars().all()
+def get_all_words(db: Session) -> List[WordModel]:
+    return db.query(WordModel).all()
 
 
-async def find_by_id(db: AsyncSession, word_id: int) -> WordModel | None:
-    result = await db.execute(select(WordModel).where(WordModel.id == word_id))
+def find_by_id(db: Session, word_id: int) -> WordModel | None:
+    result = db.execute(select(WordModel).where(WordModel.id == word_id))
     return result.scalar()
 
 
-async def find_by_meaning(db: AsyncSession, meaning: str) -> List[WordModel]:
-    results = await db.execute(
-        select(WordModel).where(WordModel.meaning.icontains(meaning))
-    )
+def find_by_meaning(db: Session, meaning: str) -> List[WordModel]:
+    results = db.execute(select(WordModel).where(WordModel.meaning.icontains(meaning)))
     return results.scalars().all()
 
 
-async def find_by_spell(db: AsyncSession, spell: str) -> List[WordModel]:
-    results = await db.execute(
-        select(WordModel).where(WordModel.spell.icontains(spell))
-    )
+def find_by_spell(db: Session, spell: str) -> List[WordModel]:
+    results = db.execute(select(WordModel).where(WordModel.spell.icontains(spell)))
     return results.scalars().all()
 
 
-async def find_by_meaning_and_spell(
-    db: AsyncSession, spell: str, meaning: str
-) -> List[WordModel]:
-    results = await db.execute(
+def find_by_meaning_and_spell(db: Session, spell: str, meaning: str) -> List[WordModel]:
+    results = db.execute(
         select(WordModel).where(
             WordModel.spell.icontains(spell) | WordModel.meaning.icontains(meaning)
         )
@@ -45,25 +38,25 @@ async def find_by_meaning_and_spell(
     return results.scalars().all()
 
 
-async def exists(db: AsyncSession, spell: str) -> bool:
-    result = await db.execute(
+def exists(db: Session, spell: str) -> bool:
+    result = db.execute(
         select(WordModel).where(func.lower(WordModel.spell) == func.lower(spell))
     )
     return result.scalar() is not None
 
 
-async def create_word(db: AsyncSession, word_body: word_schema.WordCreate) -> WordModel:
+def create_word(db: Session, word_body: word_schema.WordCreate) -> WordModel:
     word = WordModel(**word_body.dict())
 
     db.add(word)
-    await db.commit()
-    await db.refresh(word)
+    db.commit()
+    db.refresh(word)
 
     return word
 
 
-async def update_word(
-    db: AsyncSession, original: WordModel, word_update: word_schema.WordUpdate
+def update_word(
+    db: Session, original: WordModel, word_update: word_schema.WordUpdate
 ) -> WordModel:
     if word_update.spell != "":
         original.spell = word_update.spell
@@ -72,13 +65,13 @@ async def update_word(
         original.meaning = word_update.meaning
 
     db.add(original)
-    await db.commit()
-    await db.refresh(original)
+    db.commit()
+    db.refresh(original)
 
     return original
 
 
-async def delete_word(db: AsyncSession, original: WordModel) -> None:
-    await db.delete(original)
-    await db.commit()
+def delete_word(db: Session, original: WordModel) -> None:
+    db.delete(original)
+    db.commit()
     return

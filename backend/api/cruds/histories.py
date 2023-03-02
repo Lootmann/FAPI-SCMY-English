@@ -1,39 +1,29 @@
 from typing import List
 
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.future import select
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import Session
 
 from api.models.histories import History as HistoryModel
 
 
-async def get_all_histories(db: AsyncSession) -> List[HistoryModel]:
-    results = await db.execute(
-        select(HistoryModel).options(selectinload(HistoryModel.talks))
-    )
-    return results.scalars().all()
+def get_all_histories(db: Session) -> List[HistoryModel]:
+    return db.query(HistoryModel).all()
 
 
-async def find_by_id(db: AsyncSession, history_id: int) -> HistoryModel:
-    result = await db.execute(
-        select(HistoryModel)
-        .where(HistoryModel.id == history_id)
-        .options(selectinload(HistoryModel.talks))
-    )
-    return result.scalar()
+def find_by_id(db: Session, history_id: int) -> HistoryModel:
+    return db.query(HistoryModel).filter(HistoryModel.id == history_id).first()
 
 
-async def create_history(db: AsyncSession) -> HistoryModel:
+def create_history(db: Session) -> HistoryModel:
     history = HistoryModel()
 
     db.add(history)
-    await db.commit()
-    await db.refresh(history)
+    db.commit()
+    db.refresh(history)
 
     return history
 
 
-async def delete_history(db: AsyncSession, history: HistoryModel) -> None:
-    await db.delete(history)
-    await db.commit()
+def delete_history(db: Session, history: HistoryModel) -> None:
+    db.delete(history)
+    db.commit()
     return

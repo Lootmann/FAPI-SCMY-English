@@ -2,7 +2,7 @@ from typing import List
 
 from fastapi import APIRouter, Depends, status
 from fastapi.exceptions import HTTPException
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Session
 
 from api.cruds import histories as history_api
 from api.db import get_db
@@ -16,10 +16,10 @@ router = APIRouter(tags=["histories"])
     response_model=List[history_schema.History],
     status_code=status.HTTP_200_OK,
 )
-async def get_all_histories(
-    db: AsyncSession = Depends(get_db),
+def get_all_histories(
+    db: Session = Depends(get_db),
 ):
-    return await history_api.get_all_histories(db)
+    return history_api.get_all_histories(db)
 
 
 @router.get(
@@ -27,8 +27,8 @@ async def get_all_histories(
     response_model=history_schema.History,
     status_code=status.HTTP_200_OK,
 )
-async def get_history(history_id: int, db: AsyncSession = Depends(get_db)):
-    history = await history_api.find_by_id(db, history_id)
+def get_history(history_id: int, db: Session = Depends(get_db)):
+    history = history_api.find_by_id(db, history_id)
     if not history:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -42,8 +42,8 @@ async def get_history(history_id: int, db: AsyncSession = Depends(get_db)):
     response_model=history_schema.HistoryCreateResponse,
     status_code=status.HTTP_201_CREATED,
 )
-async def create_history(db: AsyncSession = Depends(get_db)):
-    return await history_api.create_history(db)
+def create_history(db: Session = Depends(get_db)):
+    return history_api.create_history(db)
 
 
 @router.delete(
@@ -51,11 +51,11 @@ async def create_history(db: AsyncSession = Depends(get_db)):
     response_model=None,
     status_code=status.HTTP_200_OK,
 )
-async def delete_history(history_id: int, db: AsyncSession = Depends(get_db)):
-    history = await history_api.find_by_id(db, history_id)
+def delete_history(history_id: int, db: Session = Depends(get_db)):
+    history = history_api.find_by_id(db, history_id)
     if not history:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"History: {history_id} Not Found",
         )
-    return await history_api.delete_history(db, history)
+    return history_api.delete_history(db, history)

@@ -1,9 +1,10 @@
 from random import randint, sample
 from string import ascii_letters
 
+from api.schemas import histories as history_schema
 from api.schemas import sentences as sentence_schema
 from api.schemas import words as word_schema
-from tests.init_async_client import async_client as client
+from tests.init_client import client
 
 
 def random_string(min_: int = 5, max_: int = 20) -> str:
@@ -12,19 +13,19 @@ def random_string(min_: int = 5, max_: int = 20) -> str:
 
 class WordFactory:
     @staticmethod
-    async def create_word(
+    def create_word(
         client,
         spell: str,
         meaning: str,
     ):
-        resp = await client.post("/words", json={"spell": spell, "meaning": meaning})
+        resp = client.post("/words", json={"spell": spell, "meaning": meaning})
         return word_schema.WordCreateResponse(**resp.json())
 
 
 class SentenceFactory:
     @staticmethod
-    async def create_sentence(client, sentence: str, translation: str):
-        resp = await client.post(
+    def create_sentence(client, sentence: str, translation: str):
+        resp = client.post(
             "/sentences",
             json={
                 "sentence": sentence,
@@ -32,3 +33,10 @@ class SentenceFactory:
             },
         )
         return sentence_schema.SentenceCreateResponse(**resp.json())
+
+
+class HistoryFactory:
+    @staticmethod
+    def create_hisotry(client):
+        resp = client.post("/histories")
+        return history_schema.HistoryCreateResponse(**resp.json())
