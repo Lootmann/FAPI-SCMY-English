@@ -16,10 +16,10 @@ router = APIRouter(tags=["sentences"])
     response_model=List[sentence_schema.Sentence],
     status_code=status.HTTP_200_OK,
 )
-async def get_all_sencentes(
+def get_all_sencentes(
     db: AsyncSession = Depends(get_db),
 ):
-    return await sentence_api.get_all_sentences(db)
+    return sentence_api.get_all_sentences(db)
 
 
 @router.get(
@@ -27,8 +27,8 @@ async def get_all_sencentes(
     response_model=sentence_schema.SentenceCreateResponse,
     status_code=status.HTTP_200_OK,
 )
-async def get_sentence_by_id(sentence_id: int, db: AsyncSession = Depends(get_db)):
-    word = await sentence_api.find_by_id(db, sentence_id)
+def get_sentence_by_id(sentence_id: int, db: AsyncSession = Depends(get_db)):
+    word = sentence_api.find_by_id(db, sentence_id)
     if not word:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -42,12 +42,12 @@ async def get_sentence_by_id(sentence_id: int, db: AsyncSession = Depends(get_db
     response_model=sentence_schema.SentenceCreateResponse,
     status_code=status.HTTP_201_CREATED,
 )
-async def create_sentence(
+def create_sentence(
     sentence_body: sentence_schema.SentenceCreate,
     db: AsyncSession = Depends(get_db),
 ):
     # TODO: validaiton - dup sentence isn't allowed
-    return await sentence_api.create_sentence(db, sentence_body)
+    return sentence_api.create_sentence(db, sentence_body)
 
 
 @router.patch(
@@ -55,14 +55,14 @@ async def create_sentence(
     response_model=None,
     status_code=status.HTTP_200_OK,
 )
-async def count_sentence(sentence_id: int, db: AsyncSession = Depends(get_db)):
-    sentence = await sentence_api.find_by_id(db, sentence_id)
+def count_sentence(sentence_id: int, db: AsyncSession = Depends(get_db)):
+    sentence = sentence_api.find_by_id(db, sentence_id)
     if not sentence:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Sentence: {sentence_id} Not Found",
         )
-    return await sentence_api.count_sentence(db, sentence)
+    return sentence_api.count_sentence(db, sentence)
 
 
 @router.patch(
@@ -70,12 +70,12 @@ async def count_sentence(sentence_id: int, db: AsyncSession = Depends(get_db)):
     response_model=sentence_schema.Sentence,
     status_code=status.HTTP_200_OK,
 )
-async def update_sentence(
+def update_sentence(
     sentence_id: int,
     sentence_body: sentence_schema.SentenceUpdate,
     db: AsyncSession = Depends(get_db),
 ):
-    original = await sentence_api.find_by_id(db, sentence_id)
+    original = sentence_api.find_by_id(db, sentence_id)
     if not original:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -88,7 +88,7 @@ async def update_sentence(
             detail=f"Sentence: POST BODY is invalid",
         )
 
-    return await sentence_api.update_sentence(db, original, sentence_body)
+    return sentence_api.update_sentence(db, original, sentence_body)
 
 
 @router.delete(
@@ -96,14 +96,14 @@ async def update_sentence(
     response_model=None,
     status_code=status.HTTP_200_OK,
 )
-async def delete_sentence(
+def delete_sentence(
     sentence_id: int,
     db: AsyncSession = Depends(get_db),
 ):
-    original = await sentence_api.find_by_id(db, sentence_id)
+    original = sentence_api.find_by_id(db, sentence_id)
     if not original:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Sentence: {sentence_id} Not Found",
         )
-    return await sentence_api.delete_sentence(db, original)
+    return sentence_api.delete_sentence(db, original)
