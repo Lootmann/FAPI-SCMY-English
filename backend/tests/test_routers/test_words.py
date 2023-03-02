@@ -172,6 +172,11 @@ class TestPatchWords:
         resp = await client.patch(f"/words/{word_id}", json=word_data)
         assert resp.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
+    async def test_patch_word_with_wrong_id(self, client):
+        word_data = {"spell": "updated", "meaning": "updated"}
+        resp = await client.patch(f"/words/287364", json=word_data)
+        assert resp.status_code == status.HTTP_404_NOT_FOUND
+
 
 @pytest.mark.asyncio
 class TestDeleteWord:
