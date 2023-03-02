@@ -1,14 +1,10 @@
 from typing import List
 
-from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from sqlalchemy.orm import selectinload
 
 from api.models.sentences import Sentence as SentenceModel
-from api.models.words import Word as WordModel
 from api.schemas import sentences as sentence_schema
-from api.schemas import words as word_schema
 
 
 async def get_all_sentences(db: AsyncSession) -> List[SentenceModel]:
