@@ -106,6 +106,11 @@ class TestPatchSentence:
         resp = await client.patch(f"/sentences/{sentence.id}", json=sentence_json)
         assert resp.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
+    async def test_patch_sentence_with_wrong_id(self, client):
+        sentence_json = {"sentence": "updated", "translation": "updated"}
+        resp = await client.patch(f"/sentences/872364", json=sentence_json)
+        assert resp.status_code == status.HTTP_404_NOT_FOUND
+
 
 @pytest.mark.asyncio
 class TestCountSentence:
