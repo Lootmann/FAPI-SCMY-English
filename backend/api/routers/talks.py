@@ -8,6 +8,7 @@ from api.cruds import histories as history_api
 from api.cruds import sentences as sentence_api
 from api.cruds import talks as talk_api
 from api.db import get_db
+from api.schemas import sentences as sentence_schema
 from api.schemas import talks as talk_schema
 
 router = APIRouter(tags=["talks"])
@@ -29,15 +30,13 @@ def get_all_talks(db: Session = Depends(get_db)):
 )
 def create_talks(
     history_id: int,
-    talk_body: talk_schema.TalkCreate,
+    talk_body: sentence_schema.SentenceCreate,
     db: Session = Depends(get_db),
 ):
-    print("\n>>> create_talks")
-
-    # create sentence
-    sentence = sentence_api.create_sentence(db, talk_body.sentence)
-
-    # get history
+    """
+    get history and
+    create sentence and create talk at the same time
+    """
     history = history_api.find_by_id(db, history_id)
     if not history:
         raise HTTPException(
@@ -45,16 +44,9 @@ def create_talks(
             detail=f"History: {history_id} Not Found",
         )
 
-    print(">>> before")
+    sentence = sentence_api.create_sentence(db, talk_body)
     talk = talk_api.create_talk(db, sentence, history)
-    print(">>> after")
-    print(talk)
-
-    return {
-        "id": 1,
-        "order_id": 1,
-        "sentence": {"sentence": "hoge", "translation": "hige", "id": 1, "counter": 0},
-    }
+    return talk
 
 
 @router.get(
@@ -63,4 +55,4 @@ def create_talks(
     status_code=status.HTTP_200_OK,
 )
 def get_all_talks_by_history_id(history_id: int, db: Session = Depends(get_db)):
-    return []
+    return talk_api.get_all_talks_by_history(db, history_id)
