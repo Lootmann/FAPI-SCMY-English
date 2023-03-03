@@ -1,16 +1,17 @@
 from typing import List
 
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from api.models.histories import History as HistoryModel
 
 
 def get_all_histories(db: Session) -> List[HistoryModel]:
-    return db.query(HistoryModel).all()
+    return db.scalars(select(HistoryModel)).all()
 
 
-def find_by_id(db: Session, history_id: int) -> HistoryModel:
-    return db.query(HistoryModel).filter(HistoryModel.id == history_id).first()
+def find_by_id(db: Session, history_id: int) -> HistoryModel | None:
+    return db.scalars(select(HistoryModel).where(HistoryModel.id == history_id)).first()
 
 
 def create_history(db: Session) -> HistoryModel:
