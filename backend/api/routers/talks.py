@@ -56,3 +56,27 @@ def create_talks(
 )
 def get_all_talks_by_history_id(history_id: int, db: Session = Depends(get_db)):
     return talk_api.get_all_talks_by_history(db, history_id)
+
+
+@router.patch(
+    "/talks/{talk_id}",
+    response_model=talk_schema.Talk,
+    status_code=status.HTTP_200_OK,
+)
+def update_talk(
+    talk_id: int,
+    talk_body: sentence_schema.SentenceUpdate,
+    db: Session = Depends(get_db),
+):
+    # IMPL
+    pass
+
+
+@router.delete(
+    "/talks/{talk_id}",
+    response_model=None,
+    status_code=status.HTTP_200_OK,
+)
+def delete_talk(talk_id: int, db: Session = Depends(get_db)):
+    # IMPL
+    pass
