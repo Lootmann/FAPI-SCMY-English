@@ -1,6 +1,6 @@
 from typing import List
 
-from sqlalchemy import func
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from api.models.histories import History as HistoryModel
@@ -9,7 +9,7 @@ from api.models.talks import Talk as TalkModel
 
 
 def get_all_talks(db: Session) -> List[TalkModel]:
-    return db.query(TalkModel).all()
+    return db.scalars(select(TalkModel)).all()
 
 
 def create_talk(
@@ -32,13 +32,11 @@ def create_talk(
 
 
 def get_all_talks_by_history(db: Session, history_id: int) -> List[TalkModel]:
-    return db.query(TalkModel).filter(TalkModel.history_id == history_id).all()
+    return db.scalars(select(TalkModel).where(TalkModel.history_id == history_id)).all()
 
 
 def get_max_talk_order_id(db: Session, history_id: int) -> int:
-    order_id = (
-        db.query(func.max(TalkModel.order_id))
-        .filter(TalkModel.history_id == history_id)
-        .first()
-    )[0]
+    order_id: int | None = db.scalar(
+        select(func.max(TalkModel.order_id)).where(TalkModel.history_id == history_id)
+    )
     return 0 if not order_id else order_id

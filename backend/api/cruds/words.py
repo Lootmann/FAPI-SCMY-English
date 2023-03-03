@@ -1,48 +1,49 @@
 from typing import List
 
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from sqlalchemy.future import select
 from sqlalchemy.orm import Session
 
-from api.models.sentences import Sentence as SentenceModel
 from api.models.words import Word as WordModel
-from api.schemas import sentences as sentence_schema
 from api.schemas import words as word_schema
 
 
 def get_all_words(db: Session) -> List[WordModel]:
-    return db.query(WordModel).all()
+    return db.scalars(select(WordModel)).all()
 
 
 def find_by_id(db: Session, word_id: int) -> WordModel | None:
-    result = db.execute(select(WordModel).where(WordModel.id == word_id))
-    return result.scalar()
+    return db.scalar(select(WordModel).where(WordModel.id == word_id))
 
 
 def find_by_meaning(db: Session, meaning: str) -> List[WordModel]:
-    results = db.execute(select(WordModel).where(WordModel.meaning.icontains(meaning)))
-    return results.scalars().all()
+    return db.scalars(
+        select(WordModel).where(WordModel.meaning.icontains(meaning))
+    ).all()
 
 
 def find_by_spell(db: Session, spell: str) -> List[WordModel]:
-    results = db.execute(select(WordModel).where(WordModel.spell.icontains(spell)))
-    return results.scalars().all()
+    return db.scalars(select(WordModel).where(WordModel.spell.icontains(spell))).all()
 
 
 def find_by_meaning_and_spell(db: Session, spell: str, meaning: str) -> List[WordModel]:
-    results = db.execute(
+    return db.scalars(
         select(WordModel).where(
-            WordModel.spell.icontains(spell) | WordModel.meaning.icontains(meaning)
+            or_(
+                WordModel.spell.icontains(spell),
+                WordModel.meaning.icontains(meaning),
+            )
         )
-    )
-    return results.scalars().all()
+    ).all()
 
 
 def exists(db: Session, spell: str) -> bool:
-    result = db.execute(
-        select(WordModel).where(func.lower(WordModel.spell) == func.lower(spell))
+    return (
+        db.scalar(
+            select(WordModel).where(func.lower(WordModel.spell) == func.lower(spell))
+        )
+        is not None
     )
-    return result.scalar() is not None
 
 
 def create_word(db: Session, word_body: word_schema.WordCreate) -> WordModel:

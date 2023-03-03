@@ -1,5 +1,6 @@
 from typing import List
 
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from api.models.sentences import Sentence as SentenceModel
@@ -7,7 +8,7 @@ from api.schemas import sentences as sentence_schema
 
 
 def get_all_sentences(db: Session) -> List[SentenceModel]:
-    return db.query(SentenceModel).all()
+    return db.scalars(select(SentenceModel)).all()
 
 
 def find_by_id(db: Session, sentence_id: int) -> SentenceModel | None:
