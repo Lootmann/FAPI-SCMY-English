@@ -1,14 +1,11 @@
 from api.models.sentences import Sentence as SentenceModel
 from api.models.talks import Talk as TalkModel
-from api.schemas import sentences as sentence_schema
 
 
 def test_sentence_model_repr():
-    sentence_body = sentence_schema.Sentence(
-        id=1, sentence="Hello World", translation="こんにちは、せかい"
+    sentence = SentenceModel(
+        id=1, sentence="Hello World", translation="こんにちは、せかい", counter=0
     )
-    sentence = SentenceModel(**sentence_body.dict())
-    sentence.counter = 0
 
     assert (
         str(sentence)
