@@ -1,5 +1,6 @@
 import React from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 function SentenceTop() {
   const [sentences, setSentences] = React.useState<SentenceType[]>([]);
@@ -47,7 +48,7 @@ function SentenceTop() {
         <ul>
           {sentences.map((sentence) => (
             <li key={sentence.id}>
-              ({sentence.counter}) {sentence.sentence}
+              <Link to={`${sentence.id}`}>{sentence.sentence}</Link>
             </li>
           ))}
         </ul>

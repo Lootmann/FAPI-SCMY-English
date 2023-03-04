@@ -8,6 +8,8 @@ import App from "./components/App";
 import SentenceTop from "./components/sentences/index";
 import Sentence from "./components/sentences/sentence";
 
+import { loader as sentenceLoader } from "./components/sentences/sentence";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -20,6 +22,7 @@ const router = createBrowserRouter([
       {
         path: "/sentences/:sentenceId",
         element: <Sentence />,
+        loader: sentenceLoader,
       },
     ],
   },
