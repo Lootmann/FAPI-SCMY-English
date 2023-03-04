@@ -2,18 +2,18 @@ import React from "react";
 import axios from "axios";
 import { useLoaderData } from "react-router-dom";
 
-export async function loader({ params }) {
+export async function loader({ params }: SentenceProp) {
   const sentence = await axios
     .get(`http://localhost:8888/sentences/${params.sentenceId}`)
     .then((resp) => {
       return resp.data;
     });
 
-  return { sentence };
+  return sentence;
 }
 
 export function Sentence() {
-  const { sentence } = useLoaderData();
+  const sentence = useLoaderData() as SentenceType;
 
   return (
     <div>

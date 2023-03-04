@@ -22,6 +22,7 @@ const router = createBrowserRouter([
       {
         path: "/sentences/:sentenceId",
         element: <Sentence />,
+        // NOTE: sentenceLoad is async. how do I write type hint correctly?
         loader: sentenceLoader,
       },
     ],
