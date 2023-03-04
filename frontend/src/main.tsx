@@ -14,7 +14,7 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       {
-        path: "/sentence",
+        path: "/sentences",
         element: <SentenceTop />,
       },
       {

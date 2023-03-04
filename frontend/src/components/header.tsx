@@ -5,7 +5,7 @@ function Header() {
   return (
     <div className="p-4 text-xl text-slate-200 bg-slate-800 flex gap-4 items-baseline">
       <p className="text-2xl">English Master</p>
-      <Link to={`sentence`}>Sentence</Link>
+      <Link to={`sentences`}>Sentence</Link>
     </div>
   );
 }
