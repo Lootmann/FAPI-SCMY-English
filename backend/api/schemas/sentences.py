@@ -41,5 +41,6 @@ class SentenceUpdate(BaseModel):
 
 class Sentence(SentenceBase):
     id: int
+    counter: int
     sentence: str
     translation: str
