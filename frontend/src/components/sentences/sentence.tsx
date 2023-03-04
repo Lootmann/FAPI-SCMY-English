@@ -17,10 +17,33 @@ export function Sentence() {
 
   // counter
   const [counter, setCounter] = React.useState<number>(0);
+  // show translation
+  const [show, setShow] = React.useState<boolean>(false);
 
-  React.useEffect(() => {
-    setCounter(sentence.counter);
-  }, []);
+  // textarea form
+  const [textarea, setTextarea] = React.useState<SentenceFormType>({
+    sentence: "",
+    translation: "",
+  });
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    axios
+      .patch(`http://localhost:8888/sentences/${sentence.id}`, {
+        sentence: textarea.sentence,
+        translation: textarea.translation,
+      })
+      .then((resp) => {
+        console.log(resp.data);
+      });
+  }
+
+  function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    e.preventDefault();
+    const { name, value } = e.target;
+    setTextarea({ ...textarea, [name]: value });
+  }
 
   function countSentence(
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -28,12 +51,22 @@ export function Sentence() {
   ) {
     e.preventDefault();
 
+    // TODO: patch? Incrementing counter should be sent by POST method, right?
     axios
       .patch(`http://localhost:8888/sentences/${sentenceId}/count`)
       .then((resp) => {
         setCounter(resp.data.counter);
       });
   }
+
+  // init counter, textarea
+  React.useEffect(() => {
+    setCounter(sentence.counter);
+
+    textarea.sentence = sentence.sentence;
+    textarea.translation = sentence.translation;
+    setTextarea(textarea);
+  }, []);
 
   return (
     <div className="flex justify-center">
@@ -49,29 +82,53 @@ export function Sentence() {
                 conter: {counter}
               </button>
             </p>
+
+            <p>
+              <button
+                onClick={() => setShow(!show)}
+                className="bg-slate-200 rounded-md px-2"
+              >
+                {show == true ? (
+                  <span>hide translation</span>
+                ) : (
+                  <span>show translation</span>
+                )}
+              </button>
+            </p>
+
+            {/* FIXME: HOW can I use the Post Form Like this?! */}
+            <form
+              method="post"
+              className="bg-slate-200 rounded-md px-2 hover:bg-yellow-500 transition-all duration-200"
+              onSubmit={(e) => handleSubmit(e)}
+            >
+              <input type="submit" value="Update" />
+            </form>
           </div>
         </header>
 
-        {/* TODO: Does textarea fit controlled components? */}
-        {/* TODO: update textare how to method patch? */}
-
-        {/* IMPL: handle form */}
-        <form action="" method="post" className="flex gap-1">
-          {/* IMPL: handleTextarea */}
+        <form
+          method="post"
+          className="flex gap-1"
+          onSubmit={(e) => e.preventDefault()}
+        >
           <textarea
             name="sentence"
             id="sentence"
-            defaultValue={sentence.sentence}
+            value={textarea?.sentence}
             className="flex-1 bg-slate-300 rounded-md px-2 outline-none"
+            onChange={(e) => handleChange(e)}
           ></textarea>
 
-          {/* IMPL: handleTextarea */}
-          <textarea
-            name="translation"
-            id="translation"
-            defaultValue={sentence.translation}
-            className="flex-1 bg-slate-300 rounded-md px-2 outline-none"
-          ></textarea>
+          {show && (
+            <textarea
+              name="translation"
+              id="translation"
+              value={textarea?.translation}
+              className="flex-1 bg-slate-300 rounded-md px-2 outline-none"
+              onChange={(e) => handleChange(e)}
+            ></textarea>
+          )}
         </form>
       </div>
     </div>
