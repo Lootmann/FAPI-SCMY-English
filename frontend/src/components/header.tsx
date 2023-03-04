@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 function Header() {
   return (
-    <div className="p-4 text-xl text-slate-200 bg-slate-800 flex gap-4 items-baseline">
+    <div className="p-4 text-xl text-slate-200 bg-slate-800 flex gap-4 items-baseline h-[4rem]">
       <p className="text-2xl">English Master</p>
       <Link to={`sentences`}>Sentence</Link>
     </div>

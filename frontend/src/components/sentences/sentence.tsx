@@ -63,74 +63,73 @@ export function Sentence() {
   React.useEffect(() => {
     setCounter(sentence.counter);
 
-    textarea.sentence = sentence.sentence;
-    textarea.translation = sentence.translation;
-    setTextarea(textarea);
+    setTextarea({
+      sentence: sentence.sentence,
+      translation: sentence.translation,
+    });
   }, []);
 
   return (
-    <div className="flex justify-center">
-      <div className="flex flex-col gap-2 w-2/3">
-        <header className="flex flex-col bg-slate-400 rounded-md px-2 py-1">
-          <div className="flex gap-4">
-            <p>No.{sentence.id}</p>
-            <p>
-              <button
-                onClick={(e) => countSentence(e, sentence.id)}
-                className="bg-slate-200 rounded-md px-2"
-              >
-                conter: {counter}
-              </button>
-            </p>
-
-            <p>
-              <button
-                onClick={() => setShow(!show)}
-                className="bg-slate-200 rounded-md px-2"
-              >
-                {show == true ? (
-                  <span>hide translation</span>
-                ) : (
-                  <span>show translation</span>
-                )}
-              </button>
-            </p>
-
-            {/* FIXME: HOW can I use the Post Form Like this?! */}
-            <form
-              method="post"
-              className="bg-slate-200 rounded-md px-2 hover:bg-yellow-500 transition-all duration-200"
-              onSubmit={(e) => handleSubmit(e)}
+    <div className="flex flex-col gap-2 h-full p-2">
+      <header className="flex flex-col rounded-md p-2">
+        <div className="flex items-center gap-4">
+          <p>No.{sentence.id}</p>
+          <p>
+            <button
+              onClick={(e) => countSentence(e, sentence.id)}
+              className="rounded-md px-2 hover:bg-green-800"
             >
-              <input type="submit" value="Update" />
-            </form>
-          </div>
-        </header>
+              conter: {counter}
+            </button>
+          </p>
 
-        <form
-          method="post"
-          className="flex gap-1"
-          onSubmit={(e) => e.preventDefault()}
-        >
+          <p>
+            <button
+              onClick={() => setShow(!show)}
+              className="rounded-md px-2 hover:bg-sky-800"
+            >
+              {show == true ? (
+                <span>hide translation</span>
+              ) : (
+                <span>show translation</span>
+              )}
+            </button>
+          </p>
+
+          {/* FIXME: HOW can I use the Post Form Like this?! */}
+          <form
+            method="post"
+            className="rounded-md px-2 hover:bg-yellow-700 transition-all duration-200"
+            onSubmit={(e) => handleSubmit(e)}
+          >
+            <input type="submit" value="Update" />
+          </form>
+        </div>
+      </header>
+
+      <form
+        method="post"
+        className="h-full flex text-2xl gap-2"
+        onSubmit={(e) => e.preventDefault()}
+      >
+        <textarea
+          name="sentence"
+          id="sentence"
+          value={textarea?.sentence}
+          className="flex-1 rounded-md p-2 outline-none border-2 border-slate-500 primary-bg-dark"
+          onChange={(e) => handleChange(e)}
+        ></textarea>
+
+        {show && (
           <textarea
-            name="sentence"
-            id="sentence"
-            value={textarea?.sentence}
-            className="flex-1 bg-slate-300 rounded-md px-2 outline-none"
+            name="translation"
+            id="translation"
+            value={textarea?.translation}
+            className="flex-1 rounded-md p-2 outline-none border-2 border-slate-500 primary-bg-dark"
             onChange={(e) => handleChange(e)}
           ></textarea>
-
-          {show && (
-            <textarea
-              name="translation"
-              id="translation"
-              value={textarea?.translation}
-              className="flex-1 bg-slate-300 rounded-md px-2 outline-none"
-              onChange={(e) => handleChange(e)}
-            ></textarea>
-          )}
-        </form>
-      </div>
+        )}
+      </form>
     </div>
   );
 }

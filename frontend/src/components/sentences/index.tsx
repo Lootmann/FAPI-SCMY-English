@@ -41,17 +41,19 @@ function SentenceTop() {
   }
 
   return (
-    <div className="flex">
-      <div className="flex-1 pr-4">
+    <div className="flex p-2">
+      <div className="flex-1 px-2">
         <h2 className="text-2xl">Sentence</h2>
 
-        <ul className="pl-4">
+        <ul className="px-2">
           {sentences.map((sentence) => (
             <li
               key={sentence.id}
               className="text-xl hover:bg-slate-400 px-2 rounded-md"
             >
-              <Link to={`${sentence.id}`}>{sentence.sentence}</Link>
+              <Link to={`${sentence.id}`}>
+                ({sentence.counter}) {sentence.sentence.substring(0, 50)}
+              </Link>
             </li>
           ))}
         </ul>

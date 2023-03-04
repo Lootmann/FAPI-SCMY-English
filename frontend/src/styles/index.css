@@ -2,7 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
-html,
-body {
-  height: 100%;
+/* primary background color */
+@layer components {
+  .primary-bg-dark {
+    background-color: #343541;
+  }
+
+  .primary-bg-light {
+    background-color: #40435e;
+  }
+
+  .primary-fg-light {
+    color: #e5e7f6;
+  }
+
+  .primary-fg-dark {
+    color: #c6c9e4;
+  }
 }
