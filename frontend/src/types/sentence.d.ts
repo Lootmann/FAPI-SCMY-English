@@ -9,3 +9,9 @@ type SentenceFormType = {
   sentence: string;
   translation: string;
 };
+
+type SentenceProp = {
+  params: {
+    sentenceId: number;
+  };
+};
